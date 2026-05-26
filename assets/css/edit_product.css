@@ -1,16 +1,37 @@
 /* =====================================================
-   edit_product.css — Edit Product page only
+   edit_product.css — Edit Product page
+   Extends styles.css; no global rules duplicated.
    ===================================================== */
 
-/* Scrollable form area */
+.bottom-nav { display: none; }
+
+.page-content {
+    padding-bottom: 160px; /* space for two-button action bar */
+}
+
+/* ── Form body ──────────────────────────────────────── */
 .product-form-body {
-    padding: 20px 20px 12px;
+    padding: 20px 20px 8px;
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-/* Price: PHP prefix + number input side by side */
+/* ── Shared field overrides ─────────────────────────── */
+.product-form-body .form-group input,
+.product-form-body .form-group select {
+    background: var(--input-bg);
+    border: 1.5px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.product-form-body .form-group input:focus,
+.product-form-body .form-group select:focus {
+    border-color: var(--electric-blue);
+    background: var(--white);
+}
+
+/* ── Price: PHP prefix ──────────────────────────────── */
 .input-prefix-wrap {
     display: flex;
     align-items: center;
@@ -18,7 +39,7 @@
     border: 1.5px solid transparent;
     border-radius: 10px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
 }
 
 .input-prefix-wrap:focus-within {
@@ -48,7 +69,7 @@
 
 .input-prefix-wrap input::placeholder { color: var(--text-muted); }
 
-/* Custom select with chevron */
+/* ── Category select ────────────────────────────────── */
 .select-wrap { position: relative; }
 
 .select-wrap select {
@@ -63,10 +84,13 @@
     cursor: pointer;
     outline: none;
     font-family: 'Poppins', sans-serif;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
 }
 
-.select-wrap select:focus { border-color: var(--electric-blue); background: var(--white); }
+.select-wrap select:focus {
+    border-color: var(--electric-blue);
+    background: var(--white);
+}
 
 .select-chevron {
     position: absolute;
@@ -79,7 +103,7 @@
     pointer-events: none;
 }
 
-/* Stock +/- stepper */
+/* ── Stock stepper ──────────────────────────────────── */
 .qty-input-wrap {
     display: flex;
     align-items: center;
@@ -87,25 +111,28 @@
     border: 1.5px solid transparent;
     border-radius: 10px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
 }
 
-.qty-input-wrap:focus-within { border-color: var(--electric-blue); background: var(--white); }
+.qty-input-wrap:focus-within {
+    border-color: var(--electric-blue);
+    background: var(--white);
+}
 
 .qty-btn {
-    width: 44px;
+    width: 48px;
     height: 48px;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 300;
     color: var(--moonless);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.15s;
     flex-shrink: 0;
+    transition: background 0.15s;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -127,30 +154,190 @@
 .qty-input::-webkit-inner-spin-button,
 .qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-/* Image upload zone */
-.upload-zone {
-    border: 2px dashed rgba(45,45,45,0.20);
+/* ── Availability toggle row ────────────────────────── */
+.availability-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--input-bg);
     border-radius: 10px;
-    padding: 28px;
-    text-align: center;
+    padding: 13px 16px;
+    min-height: 48px;
+}
+
+.availability-text {
+    font-size: 13px;
+    color: var(--moonless);
+    font-weight: 400;
+}
+
+/* iOS-style toggle */
+.toggle-switch { position: relative; display: inline-block; flex-shrink: 0; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+.toggle-track {
+    display: block;
+    width: 50px;
+    height: 28px;
+    background: rgba(45,45,45,0.20);
+    border-radius: 14px;
+    position: relative;
     cursor: pointer;
-    transition: border-color 0.15s;
-    background: var(--cotton);
+    transition: background 0.25s;
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    transition: transform 0.25s;
+}
+
+.toggle-switch input:checked + .toggle-track {
+    background: #34C759; /* iOS green */
+}
+
+.toggle-switch input:checked + .toggle-track .toggle-thumb {
+    transform: translateX(22px);
+}
+
+/* ── Image preview ──────────────────────────────────── */
+.img-preview {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 10px;
     display: block;
 }
 
-.upload-zone:hover { border-color: var(--electric-blue); }
-.upload-zone p { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
-
-/* Sticky bottom action bar */
-.form-action-bar {
-    position: sticky;
-    bottom: var(--nav-height);
-    background: var(--white);
-    border-top: 1px solid rgba(45,45,45,0.08);
-    padding: 16px 20px;
-    z-index: 50;
+/* ── Upload zone ────────────────────────────────────── */
+.upload-zone {
+    border: 2px dashed rgba(45,45,45,0.20);
+    border-radius: 10px;
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    display: block;
+    background: var(--cotton);
+    transition: border-color 0.15s;
 }
 
-.form-action-bar.two-btn { display: flex; gap: 12px; }
-.form-action-bar.one-btn { display: block; }
+.upload-zone:hover { border-color: var(--electric-blue); }
+
+.upload-zone p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+/* ── Bottom action bar ──────────────────────────────── */
+.form-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--white);
+    border-top: 1px solid rgba(45,45,45,0.08);
+    padding: 14px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 200;
+}
+
+/* Delete button — outlined, red */
+.btn-delete {
+    background: var(--white);
+    color: var(--danger);
+    border: 1.5px solid var(--danger);
+    gap: 8px;
+}
+
+.btn-delete:hover { background: #fdeaea; }
+
+/* ── Delete confirmation modal ──────────────────────── */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 400;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.modal-backdrop.show {
+    display: block;
+    opacity: 1;
+}
+
+.modal-sheet {
+    position: fixed;
+    left: 50%;
+    bottom: -100%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    padding: 28px 24px 40px;
+    z-index: 500;
+    transition: bottom 0.28s cubic-bezier(0.34, 1.10, 0.64, 1);
+}
+
+.modal-sheet.show {
+    bottom: 0;
+}
+
+.modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--input-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--moonless);
+    transition: background 0.15s;
+}
+
+.modal-close:hover { background: #e0e0e0; }
+
+.modal-close svg {
+    width: 15px;
+    height: 15px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--moonless);
+    margin-bottom: 10px;
+    padding-right: 36px; /* avoid overlap with close btn */
+}
+
+.modal-body {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.modal-confirm-btn {
+    min-height: 48px;
+    font-size: 15px;
+    font-weight: 600;
+}

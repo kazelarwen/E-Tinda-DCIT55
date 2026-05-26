@@ -34,6 +34,7 @@ require '../includes/header.php';
         class="add-product-form">
         <input type="hidden" name="action" value="add">
 
+        <!-- Product name -->
         <div class="add-product-body">
             <div class="add-product-group">
                 <label class="add-product-label" for="name">Product name</label>
@@ -47,6 +48,7 @@ require '../includes/header.php';
                     autocomplete="off">
             </div>
 
+            <!-- Price -->
             <div class="add-product-group">
                 <label class="add-product-label" for="price">Price</label>
                 <div class="add-product-price">
@@ -61,6 +63,7 @@ require '../includes/header.php';
                 </div>
             </div>
 
+            <!-- Category -->
             <div class="add-product-group">
                 <label class="add-product-label" for="category">Category</label>
                 <div class="add-product-select-wrap">
@@ -78,6 +81,7 @@ require '../includes/header.php';
                 </div>
             </div>
 
+            <!-- Stock -->
             <div class="add-product-group">
                 <label class="add-product-label" for="stock">Add Stock</label>
                 <div class="add-product-stock">
@@ -93,6 +97,7 @@ require '../includes/header.php';
                 </div>
             </div>
 
+            <!-- Image -->
             <div class="add-product-group">
                 <label class="add-product-label" for="image">Product image <span>(optional)</span></label>
                 <label class="add-product-upload" for="image">
