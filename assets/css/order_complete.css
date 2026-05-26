@@ -1,0 +1,69 @@
+/* =====================================================
+   order_complete.css — Order Complete page only
+   ===================================================== */
+
+.complete-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: calc(100vh - var(--nav-height));
+    background: var(--white);
+    padding-bottom: 0;
+}
+
+/* Center the icon + title */
+.complete-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 80px 24px 40px;
+}
+
+/* Three concentric rings */
+.complete-rings {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.ring { position: absolute; border-radius: 50%; }
+
+.ring-outer { width: 140px; height: 140px; background: rgba(49, 113, 198, 0.12); }
+.ring-mid   { width: 110px; height: 110px; background: rgba(49, 113, 198, 0.22); }
+.ring-inner {
+    width: 80px;
+    height: 80px;
+    background: var(--electric-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-icon { width: 36px; height: 36px; }
+
+.complete-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--moonless);
+    text-align: center;
+}
+
+/* "Back home →" pill button — bottom right */
+.complete-footer {
+    padding: 0 20px 36px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.complete-home-btn {
+    padding: 12px 22px;
+    font-size: 14px;
+    border-radius: 24px;
+    gap: 8px;
+}

@@ -1,0 +1,97 @@
+/* =====================================================
+   transaction_history.css — Transaction History list
+   ===================================================== */
+
+.txn-page {
+    background: var(--white);
+    padding-bottom: calc(var(--nav-height) + 16px);
+}
+
+/* Page title — large, no back arrow */
+.txn-title-row {
+    padding: 24px 20px 16px;
+}
+
+.txn-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--moonless);
+}
+
+/* Date group label e.g. "TODAY" / "13 APR 2026" */
+.txn-group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.6px;
+    padding: 16px 20px 6px;
+}
+
+/* Container for one day's rows */
+.txn-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+    border-top: 1px solid rgba(45,45,45,0.10);
+}
+
+/* Individual transaction row */
+.txn-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(45,45,45,0.10);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.txn-row:hover { background: rgba(49,113,198,0.03); }
+
+.txn-row-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* "ID: 009" — blue, bold */
+.txn-row-id {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--electric-blue);
+}
+
+/* Amount below the ID */
+.txn-row-amount {
+    font-size: 13px;
+    color: var(--moonless);
+}
+
+/* Chevron > */
+.txn-row-chevron {
+    width: 18px;
+    height: 18px;
+    stroke: rgba(45,45,45,0.35);
+    flex-shrink: 0;
+}
+
+/* Empty state */
+.txn-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.txn-empty svg {
+    width: 48px;
+    height: 48px;
+    stroke: rgba(45,45,45,0.20);
+    margin-bottom: 12px;
+}
+
+.txn-empty p { font-size: 13px; }

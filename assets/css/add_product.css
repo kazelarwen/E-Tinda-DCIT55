@@ -1,0 +1,288 @@
+/* =====================================================
+   Add Product
+   ===================================================== */
+
+html,
+body,
+.app-layout {
+    background: var(--white); /* Matching the clean off-white canvas look */
+}
+
+.app-layout {
+    max-width: 400px;
+    min-height: 100vh;
+}
+
+.bottom-nav {
+    display: none;
+}
+
+.add-product-page {
+    min-height: 100vh;
+    background: transparent;
+    padding: 0 0 120px; 
+}
+
+.add-product-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 16px;
+    background: var(--white);
+    border-bottom: 1px solid rgba(45, 45, 45, 0.07);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.add-product-back {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #050505;
+    background: #f4f4f4; /* Added the soft button container look from the inventory page */
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.add-product-back:hover {
+    background: #eaeaea;
+}
+
+.add-product-back svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+}
+
+.add-product-title {
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #111111;
+}
+
+.add-product-form {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Dynamically handles form rows matching the gaps in cards */
+}
+
+.add-product-body {
+    padding: 20px 20px;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Standardize card spacings gap values */
+}
+
+.add-product-group {
+    margin-bottom: 0; /* Handled gracefully by flex gap above */
+}
+
+.add-product-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-weight: 1.4;
+    font-weight: 500;
+    color: #2d2d2d;
+}
+
+.add-product-label span {
+    color: var(--text-muted);
+}
+
+.add-product-input,
+.add-product-select,
+.add-product-price,
+.add-product-stock {
+    width: 100%;
+    min-height: 44px; /* Slightly taller to capture modern touch-target look */
+    background: var(--cotton); /* Form field base background setup wrapper */
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+
+.add-product-input {
+    padding: 12px 18px;
+    font-size: 14px;
+    color: var(--moonless);
+    outline: none;
+}
+
+.add-product-input::placeholder,
+.add-product-price input::placeholder {
+    color: rgba(45, 45, 45, 0.35);
+}
+
+.add-product-price {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--cotton);
+}
+
+.add-product-prefix {
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--moonless);
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.add-product-price input {
+    flex: 1;
+    min-width: 0;
+    height: 44px;
+    padding: 0 14px;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    font-size: 14px;
+    color: var(--moonless);
+}
+
+.add-product-select-wrap {
+    position: relative;
+}
+
+.add-product-select {
+    padding: 0 44px 0 18px;
+    font-size: 14px;
+    color: var(--moonless);
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.add-product-chevron {
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    stroke: #2d2d2d;
+    pointer-events: none;
+}
+
+.add-product-stock {
+    display: grid;
+    grid-template-columns: 58px 1fr 58px;
+    align-items: center;
+    overflow: hidden;
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.add-product-stock button {
+    width: 100%;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    color: #111111;
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.add-product-stock input {
+    width: 100%;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    outline: none;
+    color: #111111;
+    font-size: 14px;
+}
+
+.add-product-stock input::-webkit-inner-spin-button,
+.add-product-stock input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.add-product-upload {
+    display: flex;
+    min-height: 140px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+    background: transparent;
+    border: 1.5px dashed rgba(45, 45, 45, 0.2);
+    border-radius: 10px;
+    color: rgba(45, 45, 45, 0.4);
+    cursor: pointer;
+}
+
+.add-product-upload svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+}
+
+.add-product-upload p {
+    font-size: 13px;
+    color: rgba(45, 45, 45, 0.4);
+}
+
+.add-product-preview {
+    display: none;
+    width: 100%;
+    height: 140px;
+    margin-top: 12px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.add-product-actions {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    z-index: 200;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px 16px 24px; /* Normalized padding to avoid clipping on bottom ends */
+    transform: translateX(-50%);
+    background: #ffffff;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.add-product-actions .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: none;
+    text-decoration: none;
+    text-align: center;
+}
+
+.add-product-actions .btn-danger {
+    background: #c8191e;
+    color: #ffffff;
+}
+
+.add-product-actions .btn-primary {
+    background: #347dd1;
+    color: #ffffff;
+}

@@ -1,0 +1,129 @@
+/* =====================================================
+   transaction_detail.css — Single transaction receipt
+   ===================================================== */
+
+.detail-page {
+    background: var(--white);
+    padding: 0 20px calc(var(--nav-height) + 20px);
+}
+
+/* TRANSACTION ID: row */
+.detail-id-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 20px 0 4px;
+    border-bottom: 1px solid rgba(45,45,45,0.10);
+    padding-bottom: 8px;
+}
+
+.detail-id-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--electric-blue);
+    letter-spacing: 0.3px;
+}
+
+.detail-id-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--moonless);
+}
+
+/* Date + time row */
+.detail-datetime-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 20px;
+}
+
+.detail-date {
+    font-size: 13px;
+    color: var(--moonless);
+}
+
+.detail-time {
+    font-size: 13px;
+    color: var(--moonless);
+}
+
+/* Column headers: QTY | ITEM | AMT */
+.detail-col-headers {
+    display: grid;
+    grid-template-columns: 36px 1fr 60px;
+    gap: 0;
+    padding: 8px 0;
+    border-top: 1px solid rgba(45,45,45,0.12);
+    border-bottom: 1px solid rgba(45,45,45,0.12);
+}
+
+.col-qty  { font-size: 11px; font-weight: 700; color: var(--moonless); letter-spacing: 0.5px; }
+.col-item { font-size: 11px; font-weight: 700; color: var(--moonless); letter-spacing: 0.5px; }
+.col-amt  { font-size: 11px; font-weight: 700; color: var(--moonless); letter-spacing: 0.5px; text-align: right; }
+
+/* Line items list */
+.detail-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 60px;
+    gap: 0;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(45,45,45,0.06);
+}
+
+.detail-item-row .col-qty  { font-size: 13px; color: var(--moonless); font-weight: 400; }
+.detail-item-row .col-item { font-size: 13px; color: var(--moonless); font-weight: 400; }
+.detail-item-row .col-amt  { font-size: 13px; color: var(--moonless); font-weight: 400; text-align: right; }
+
+/* Totals block */
+.detail-totals {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 4px;
+    border-top: 1.5px dashed rgba(45,45,45,0.15);
+    padding-top: 4px;
+}
+
+.totals-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(45,45,45,0.06);
+}
+
+.totals-row:last-child { border-bottom: none; }
+
+.totals-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--moonless);
+    letter-spacing: 0.3px;
+}
+
+.totals-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--moonless);
+}
+
+/* TOTAL row — electric blue */
+.totals-row--total .totals-label--total,
+.totals-row--total .totals-value--total {
+    color: var(--electric-blue);
+    font-size: 14px;
+}
+
+/* PAYMENT row — both blue */
+.totals-row--payment .totals-label--payment,
+.totals-row--payment .totals-value--payment {
+    color: var(--electric-blue);
+    font-size: 13px;
+    font-weight: 600;
+}

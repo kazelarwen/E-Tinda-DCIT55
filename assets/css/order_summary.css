@@ -1,0 +1,230 @@
+/* =====================================================
+   order_summary.css — Order Summary page only
+   ===================================================== */
+
+/* List of order item cards */
+.summary-list {
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Each item row: image | name+price | subtotal + stepper */
+.summary-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    align-items: center;
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 12px 14px;
+}
+
+.summary-img-wrap { grid-row: 1 / 3; }
+
+.summary-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    display: block;
+}
+
+.summary-img-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    background: var(--input-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.summary-info { display: flex; flex-direction: column; gap: 2px; }
+.summary-name { font-size: 13px; font-weight: 600; color: var(--moonless); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.summary-price { font-size: 12px; color: var(--text-muted); }
+
+/* Subtotal — top right of row */
+.summary-subtotal { font-size: 13px; font-weight: 600; color: var(--moonless); text-align: right; align-self: start; }
+
+/* Qty stepper: − 2 + */
+.summary-stepper {
+    display: flex;
+    align-items: center;
+    background: var(--input-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    justify-self: end;
+}
+
+.stepper-btn {
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--moonless);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    font-family: 'Poppins', sans-serif;
+}
+
+.stepper-btn:hover { background: rgba(45,45,45,0.08); }
+
+.stepper-plus { background: var(--moonless); color: var(--white); border-radius: 0 8px 8px 0; }
+.stepper-plus:hover { background: #444; }
+
+.stepper-val { min-width: 28px; text-align: center; font-size: 13px; font-weight: 600; color: var(--moonless); }
+
+/* Custom select (payment method) */
+.paymentMethod{
+    background: var(--white);
+}
+.select-wrap { position: relative; }
+
+.select-wrap select {
+    width: 100%;
+    padding: 13px 40px 13px 16px;
+    background: var(--input-bg);
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--moonless);
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.2s;
+}
+
+.select-wrap select:focus { border-color: var(--electric-blue); background: var(--white); }
+
+.select-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    stroke: var(--text-muted);
+    pointer-events: none;
+}
+
+/* Sticky bottom: Total + action buttons */
+.order-bottom-bar {
+    position: sticky;
+    bottom: var(--nav-height);
+    background: var(--white);
+    border-top: 1px solid rgba(45,45,45,0.08);
+    z-index: 50;
+}
+
+.order-total-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+}
+
+.total-label-lg { font-size: 16px; font-weight: 600; color: var(--moonless); }
+.total-value-lg  { font-size: 20px; font-weight: 700; color: var(--moonless); }
+
+.form-action-bar {
+    padding: 0 20px 20px;
+}
+
+.form-action-bar.two-btn { display: flex; gap: 12px; }
+
+/* ── Cancel Order Modal ─────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(45,45,45,0.45);
+    z-index: 400;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s;
+}
+
+.modal-backdrop.modal--open { opacity: 1; pointer-events: all; }
+
+.cancel-modal {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%) translateY(100%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    padding: 28px 24px 40px;
+    z-index: 500;
+    transition: transform 0.28s cubic-bezier(0.32, 0, 0.67, 0);
+    box-shadow: 0 -8px 32px rgba(45,45,45,0.18);
+}
+
+.cancel-modal.modal--open {
+    transform: translateX(-50%) translateY(0);
+    transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.cancel-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    background: var(--cotton);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+.cancel-modal-close:hover { background: var(--input-bg); }
+.cancel-modal-close svg { width: 16px; height: 16px; stroke: var(--moonless); }
+
+.cancel-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--moonless);
+    text-align: center;
+    margin-bottom: 10px;
+    padding-top: 4px;
+}
+
+.cancel-modal-body {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.btn-cancel-confirm {
+    background: #C0392B;
+    color: white;
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    width: 100%;
+    box-shadow: inset 0 0 0 1.5px rgba(45,45,45,0.20);
+    transition: opacity 0.15s;
+}
+
+.btn-cancel-confirm:hover { opacity: 0.88; }

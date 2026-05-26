@@ -1,0 +1,253 @@
+/* =====================================================
+   home.css — Home / Order Entry page only
+   ===================================================== */
+
+/* Blue top search bar */
+.topbar {
+    background: var(--electric-blue);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.topbar-search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    border-radius: 25px;
+    padding: 10px 16px;
+    gap: 8px;
+}
+
+.topbar-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 13px;
+    color: var(--moonless);
+    width: 100%;
+}
+
+.topbar-search input::placeholder { color: var(--text-muted); }
+.topbar-search svg { width: 16px; height: 16px; stroke: var(--text-muted); fill: none; flex-shrink: 0; }
+
+/* Avatar circle in topbar */
+.topbar-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.30);
+    border: 2px solid rgba(255,255,255,0.60);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* Category filter tabs */
+.categories {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px 8px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    background: var(--cotton);
+}
+
+.categories::-webkit-scrollbar { display: none; }
+
+.cat-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--white);
+    box-shadow: var(--card-shadow);
+    border: 2px solid transparent;
+    cursor: pointer;
+    min-width: 72px;
+    transition: border-color 0.15s, background 0.15s;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.cat-tab.active { border-color: var(--electric-blue); background: #EEF4FC; }
+.cat-tab svg { width: 26px; height: 26px; stroke: var(--moonless); fill: none; stroke-width: 1.8; }
+.cat-tab.active svg { stroke: var(--electric-blue); }
+.cat-tab span { font-size: 11px; font-weight: 500; color: var(--moonless); }
+.cat-tab.active span { color: var(--electric-blue); }
+
+/* 2-column product grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 12px 20px 100px;
+}
+
+/* "Add New Product" dashed tile */
+.product-card-add {
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    border: 2px dashed rgba(45,45,45,0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px 12px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: border-color 0.15s, color 0.15s;
+    min-height: 170px;
+}
+
+.product-card-add:hover { border-color: var(--electric-blue); color: var(--electric-blue); }
+.product-card-add .plus { font-size: 28px; font-weight: 300; line-height: 1; }
+.product-card-add span { font-size: 12px; font-weight: 500; text-align: center; }
+
+/* Product card */
+.product-card {
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.12s;
+}
+
+.product-card:hover { transform: translateY(-2px); }
+
+.product-card .card-img { width: 100%; height: 110px; object-fit: cover; display: block; }
+
+.card-img-placeholder {
+    width: 100%;
+    height: 110px;
+    background: var(--input-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 28px;
+}
+
+.product-card .card-body { padding: 10px 10px 0; }
+.product-card .card-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--moonless);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .card-price { font-size: 12px; color: var(--text-muted); }
+
+.product-card .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px 10px;
+}
+
+.badge-out {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #FDEAEA;
+    color: #A32D2D;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* + icon button on cards */
+.btn-add-icon {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 8px;
+    background: var(--electric-blue);
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(45,45,45,0.30);
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.btn-add-icon:hover { opacity: 0.85; }
+
+/* Slide-up cart bar (shown when items are in cart) */
+.cart-bar {
+    position: fixed;
+    bottom: var(--nav-height);
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    width: 100%;
+    max-width: 430px;
+    background: var(--electric-blue);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+}
+
+.cart-bar.visible {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+}
+
+.cart-cancel {
+    background: #E24B4A;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.cart-proceed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    /* button reset */
+    background: none;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    padding: 0;
+}
+
+.cart-proceed svg { width: 20px; height: 20px; stroke: white; fill: none; }

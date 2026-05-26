@@ -1,0 +1,273 @@
+/* =====================================================
+   dashboard.css — Dashboard page only
+   ===================================================== */
+
+.db-page {
+    background: var(--cotton);
+    padding-bottom: calc(var(--nav-height) + 20px);
+}
+
+/* Page title */
+.db-title-row { padding: 24px 20px 8px; }
+
+.db-title { font-size: 26px; font-weight: 700; color: var(--moonless); }
+
+/* ── Overview 2×2 stat grid ─────────────────────────── */
+.overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 20px;
+}
+
+.stat-tile {
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stat-tile--blue  { background: var(--electric-blue); color: white; }
+.stat-tile--white { background: var(--white); color: var(--moonless); }
+
+.tile-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.tile-label { font-size: 12px; font-weight: 500; opacity: 0.9; }
+.stat-tile--white .tile-label { color: var(--text-muted); }
+
+/* Icon circle in tile corner */
+.tile-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tile-icon svg { width: 16px; height: 16px; }
+.tile-icon--white { background: rgba(255,255,255,0.25); }
+.tile-icon--white svg { stroke: white; }
+.tile-icon--blue  { background: rgba(49,113,198,0.10); }
+.tile-icon--blue svg  { stroke: var(--electric-blue); }
+
+/* Large number */
+.tile-value { font-size: 24px; font-weight: 700; color: white; line-height: 1.1; }
+.tile-value--dark { color: var(--moonless); }
+
+.tile-sub { font-size: 10px; color: rgba(255,255,255,0.70); }
+
+/* Small pill badges */
+.tile-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 500;
+    width: fit-content;
+}
+
+.tile-badge--white { background: rgba(255,255,255,0.22); color: white; }
+.tile-badge--green { background: #E6F4EA; color: #2D6A3F; }
+.tile-badge--red   { background: #FDEAEA; color: #A32D2D; }
+
+/* Stock progress bar inside tile */
+.stock-bar-wrap { display: flex; flex-direction: column; gap: 4px; }
+
+.stock-bar {
+    height: 6px;
+    background: rgba(45,45,45,0.10);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.stock-bar-fill {
+    height: 100%;
+    background: #3DAB6E;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+}
+
+.stock-label { font-size: 10px; color: #3DAB6E; font-weight: 500; }
+
+/* ── Sales Summary card ──────────────────────────────── */
+.sales-card {
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    margin: 0 20px;
+    padding: 16px;
+}
+
+.sales-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.sales-card-title { font-size: 13px; font-weight: 500; color: var(--moonless); }
+
+.sales-today-pill {
+    background: #EEF4FC;
+    color: var(--electric-blue);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.sales-big-value { font-size: 28px; font-weight: 700; color: var(--moonless); line-height: 1.15; }
+.sales-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 14px; }
+
+/* 7-day mini bar chart */
+.week-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px;
+    margin-bottom: 14px;
+}
+
+.week-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.week-amount { font-size: 9px; color: var(--text-muted); white-space: nowrap; }
+.week-col--today .week-amount { color: var(--electric-blue); font-weight: 600; }
+.week-bar-wrap { display: flex; align-items: flex-end; height: 44px; }
+.week-bar { width: 100%; min-height: 4px; background: var(--input-bg); border-radius: 3px 3px 0 0; }
+.week-col--today .week-bar { background: var(--electric-blue); }
+.week-day { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+.week-col--today .week-day { color: var(--electric-blue); font-weight: 600; }
+
+.cancelled-row { border-top: 1px solid rgba(45,45,45,0.07); padding-top: 12px; display: flex; flex-direction: column; gap: 2px; }
+.cancelled-label { font-size: 11px; color: var(--text-muted); }
+.cancelled-val   { font-size: 18px; font-weight: 700; color: var(--moonless); }
+
+/* ── Best Seller card ────────────────────────────────── */
+.best-seller-card {
+    background: var(--white);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    margin: 0 20px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-left: 3px solid var(--electric-blue);
+}
+
+.best-seller-icon {
+    width: 44px;
+    height: 44px;
+    background: #EEF4FC;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.best-seller-icon svg { width: 24px; height: 24px; }
+
+.best-seller-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.best-seller-badge { font-size: 10px; color: #EF9F27; font-weight: 600; }
+.best-seller-name  { font-size: 14px; font-weight: 700; color: var(--moonless); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.best-seller-sub   { font-size: 10px; color: var(--text-muted); }
+
+.best-seller-qty { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
+.best-qty-num    { font-size: 26px; font-weight: 700; color: var(--electric-blue); line-height: 1; }
+.best-qty-label  { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
+
+.best-seller-empty {
+    justify-content: center;
+    border-left: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    border: 2px dashed rgba(45,45,45,0.12);
+}
+
+/* ── Low Stock card ──────────────────────────────────── */
+.lowstock-card {
+    margin: 0 20px;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+/* "All in stock" green banner */
+.lowstock-all-good { background: #3DAB6E; padding: 12px 16px; }
+
+.lowstock-good-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.lowstock-empty-body { background: var(--white); padding: 20px 16px; text-align: center; }
+.lowstock-empty-body p { font-size: 13px; font-weight: 500; color: var(--moonless); }
+
+/* "Items need restocking" blue banner */
+.lowstock-warn-header {
+    background: var(--electric-blue);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.lowstock-list { background: var(--white); display: flex; flex-direction: column; }
+
+.lowstock-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(45,45,45,0.06);
+}
+
+.lowstock-item:last-child { border-bottom: none; }
+
+.lowstock-item-icon {
+    width: 36px;
+    height: 36px;
+    background: #EEF4FC;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.lowstock-item-info { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.lowstock-item-name { font-size: 13px; font-weight: 500; color: var(--moonless); }
+
+.lowstock-bar-row { display: flex; align-items: center; gap: 8px; }
+
+.lowstock-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(45,45,45,0.10);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.lowstock-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+.lowstock-count { font-size: 11px; font-weight: 600; color: var(--text-muted); white-space: nowrap; 
+}
+
