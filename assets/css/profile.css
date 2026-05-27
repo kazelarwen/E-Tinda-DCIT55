@@ -1,0 +1,183 @@
+/* =====================================================
+   profile.css — Profile page only
+   ===================================================== */
+ 
+/* Blue hero section */
+.profile-hero {
+    background: var(--electric-blue);
+    padding: 20px 20px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+ 
+.back-btn:hover {
+    background: none;
+}
+
+/* Back button top-left */
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    background: none;
+    border: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+}
+ 
+.back-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: white !important;
+    fill: none !important;
+}
+ 
+/* Page title centered */
+.profile-title {
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 20px;
+}
+ 
+/* Avatar circle */
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    border: 3px solid rgba(255,255,255,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+ 
+.profile-name {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+ 
+.profile-stall {
+    color: rgba(255,255,255,0.75);
+    font-size: 13px;
+}
+ 
+/* Main content area */
+.profile-content {
+    background: #F2F2F7;
+    min-height: 100%;
+    padding: 20px 16px 100px;
+}
+ 
+/* Section labels */
+.section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin: 0 4px 8px;
+}
+ 
+/* White card */
+.info-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+ 
+/* Each row */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.12s;
+}
+ 
+.info-row:hover { background: #F9F9F9; }
+ 
+/* Icon box */
+.info-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #EEF4FC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+ 
+.info-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--electric-blue);
+}
+ 
+/* Danger icon */
+.danger-icon {
+    background: #FDEAEA;
+}
+ 
+.danger-icon svg {
+    stroke: #D9534F;
+}
+ 
+/* Text */
+.info-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+ 
+.info-label {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+ 
+.info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--moonless);
+}
+ 
+.danger-text {
+    color: #D9534F;
+}
+ 
+/* Chevron */
+.chevron {
+    width: 16px;
+    height: 16px;
+    stroke: #C7C7CC;
+    flex-shrink: 0;
+}
+ 
+/* Divider between rows */
+.info-divider {
+    height: 1px;
+    background: #F2F2F7;
+    margin-left: 66px;
+}
+ 

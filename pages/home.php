@@ -58,8 +58,8 @@ require '../includes/header.php';
             oninput="filterProducts(this.value)">
     </div>
 
-    <!-- Avatar → goes to dashboard -->
-    <a href="dashboard.php" class="topbar-avatar">
+    <!-- Avatar → goes to profile -->
+    <a href="profile.php" class="topbar-avatar">
         <?= $initials ?>
     </a>
 </div>
