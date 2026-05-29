@@ -4,6 +4,7 @@
 $active_nav = $active_nav ?? '';
 ?>
 
+<?php if (empty($hide_nav)): ?>
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="home.php" class="nav-item <?= $active_nav === 'home' ? 'active' : '' ?>">
@@ -39,6 +40,7 @@ $active_nav = $active_nav ?? '';
             <span>History</span>
         </a>
     </nav>
+<?php endif; ?>
 
 </div><!-- /.app-layout -->
 <script src="../assets/js/main.js"></script>

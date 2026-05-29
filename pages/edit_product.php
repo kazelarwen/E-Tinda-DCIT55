@@ -17,6 +17,10 @@ if (!$product) { header("Location: inventory.php"); exit; }
 $error   = $_SESSION['error']   ?? ''; unset($_SESSION['error']);
 $success = $_SESSION['success'] ?? ''; unset($_SESSION['success']);
 
+// Check if the saved category is a custom one (not in the default list)
+$default_categories = ['Drinks', 'Cookies', 'Bread', 'Snacks', 'Others'];
+$is_custom = !in_array($product['category'], $default_categories);
+
 require '../includes/header.php';
 ?>
 
@@ -79,17 +83,33 @@ require '../includes/header.php';
             <div class="form-group">
                 <label for="category">Category</label>
                 <div class="select-wrap">
-                    <select id="category" name="category" required>
+                    <select id="category" name="category" required onchange="toggleOthers(this)">
                         <option value="" disabled>Choose category</option>
-                        <?php foreach (['Drinks','Cookies','Bread','Snacks','Others'] as $cat): ?>
+                        <?php foreach (['Drinks','Cookies','Bread','Snacks'] as $cat): ?>
                             <option value="<?= $cat ?>" <?= $product['category'] === $cat ? 'selected' : '' ?>>
                                 <?= $cat ?>
                             </option>
                         <?php endforeach; ?>
+                        <!-- If custom, select Others; otherwise check if Others was saved -->
+                        <option value="Others" <?= ($is_custom || $product['category'] === 'Others') ? 'selected' : '' ?>>
+                            Others
+                        </option>
                     </select>
                     <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2">
                         <path d="M6 9l6 6 6-6"/>
                     </svg>
+                </div>
+
+                <!-- Shows only when Others is selected -->
+                <div id="othersGroup" style="margin-top: 10px; <?= $is_custom ? '' : 'display:none;' ?>">
+                    <input
+                        type="text"
+                        id="custom_category"
+                        name="custom_category"
+                        placeholder="Enter category name"
+                        value="<?= $is_custom ? htmlspecialchars($product['category']) : '' ?>"
+                        <?= $is_custom ? 'required' : '' ?>
+                        autocomplete="off">
                 </div>
             </div>
 
@@ -158,65 +178,128 @@ require '../includes/header.php';
 
 </div><!-- /.page-content -->
 
-<!-- ── Delete confirmation modal ───────────────────── -->
-<div class="modal-backdrop" id="deleteBackdrop" onclick="closeDeleteModal()"></div>
-
-<div class="modal-sheet" id="deleteModal" role="dialog" aria-modal="true"
-     aria-labelledby="modalTitle">
-
-    <button class="modal-close" onclick="closeDeleteModal()" aria-label="Close">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
-    </button>
-
-    <h2 class="modal-title" id="modalTitle">Delete product</h2>
-    <p class="modal-body">
-        Do you really want to delete this product?<br>This action cannot be undone.
-    </p>
-
-    <button class="btn btn-danger btn-full modal-confirm-btn"
-            onclick="document.getElementById('deleteForm').submit()">
-        Delete product
-    </button>
-
+<!-- Delete modal -->
+<div id="deleteModalOverlay" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    height: 100%;
+    background: rgba(45,45,45,0.45);
+    z-index: 400;
+    align-items: center;
+    justify-content: center;
+">
+    <div style="
+        background: #fff;
+        border-radius: 16px;
+        padding: 28px 24px 24px;
+        width: calc(100% - 48px);
+        max-width: 320px;
+        text-align: center;
+        position: relative;
+        font-family: 'Poppins', sans-serif;
+    ">
+        <button onclick="closeDeleteModal()" style="
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D2D2D" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+        <div style="font-size: 18px; font-weight: 700; color: #2D2D2D; margin-bottom: 8px;">
+            Delete product
+        </div>
+        <div style="
+            font-size: 14px;
+            color: rgba(45,45,45,0.45);
+            margin-bottom: 22px;
+            line-height: 1.5;
+        ">Do you really want to delete this product?</div>
+        <button onclick="document.getElementById('deleteForm').submit()" style="
+            width: 100%;
+            padding: 14px;
+            background: #C0392B;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        ">Delete product</button>
+    </div>
 </div>
 
 <script>
+function toggleOthers(select) {
+    const othersGroup = document.getElementById('othersGroup');
+    const customInput = document.getElementById('custom_category');
+
+    if (select.value === 'Others') {
+        othersGroup.style.display = 'block';
+        customInput.required = true;
+    } else {
+        othersGroup.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
+}
+
 function changeQty(delta) {
     const input = document.getElementById('stock');
-    input.value = Math.max(0, (parseInt(input.value, 10) || 0) + delta);
+    const currentValue = parseInt(input.value, 10) || 0;
+    input.value = Math.max(0, currentValue + delta);
 }
 
 function previewImage(input) {
     const preview = document.getElementById('imgPreview');
-    const label   = document.getElementById('uploadLabel');
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            label.textContent = input.files[0].name;
-        };
-        reader.readAsDataURL(input.files[0]);
+    const label = document.getElementById('uploadLabel');
+
+    if (!input.files || !input.files[0]) {
+        preview.style.display = 'none';
+        preview.removeAttribute('src');
+        label.textContent = 'Tap to choose an image';
+        return;
     }
+
+    const reader = new FileReader();
+    reader.onload = event => {
+        preview.src = event.target.result;
+        preview.style.display = 'block';
+        label.textContent = input.files[0].name;
+    };
+    reader.readAsDataURL(input.files[0]);
 }
 
 function openDeleteModal() {
-    document.getElementById('deleteBackdrop').classList.add('show');
-    document.getElementById('deleteModal').classList.add('show');
+    document.getElementById('deleteModalOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
 
 function closeDeleteModal() {
-    document.getElementById('deleteBackdrop').classList.remove('show');
-    document.getElementById('deleteModal').classList.remove('show');
+    document.getElementById('deleteModalOverlay').style.display = 'none';
     document.body.style.overflow = '';
 }
 
-// Close on Escape key
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeDeleteModal();
+});
+
+document.getElementById('deleteModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
 });
 </script>
 

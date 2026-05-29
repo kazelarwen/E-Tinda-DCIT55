@@ -19,8 +19,16 @@ if ($action === 'add') {
     $category = trim($_POST['category'] ?? '');
     $stock    = (int)($_POST['stock']   ?? 0);
 
+    // If "Others" was chosen, use the custom category input instead
+    if ($category === 'Others') {
+        $custom = trim($_POST['custom_category'] ?? '');
+        if ($custom !== '') {
+            $category = $custom;
+        }
+    }
+
     // Server-side validation
-    if ($name === '' || $price <= 0 || $category === '') {
+    if ($name === '' || $price <= 0 || $category === '' || $category === 'Others') {
         $_SESSION['error'] = "Please fill in all required fields.";
         header("Location: ../pages/add_product.php");
         exit;
@@ -54,8 +62,8 @@ if ($action === 'add') {
             exit;
         }
 
-        $image    = uniqid('prod_') . '.' . $ext;
-        $dest     = __DIR__ . '/../assets/uploads/' . $image;
+        $image = uniqid('prod_') . '.' . $ext;
+        $dest  = __DIR__ . '/../assets/uploads/' . $image;
 
         if (!move_uploaded_file($_FILES['image']['tmp_name'], $dest)) {
             $_SESSION['error'] = "Could not save image. Check folder permissions.";
@@ -87,7 +95,15 @@ if ($action === 'edit') {
     $category = trim($_POST['category'] ?? '');
     $stock    = (int)($_POST['stock']   ?? 0);
 
-    if (!$id || $name === '' || $price <= 0 || $category === '') {
+    // If "Others" was chosen, use the custom category input instead
+    if ($category === 'Others') {
+        $custom = trim($_POST['custom_category'] ?? '');
+        if ($custom !== '') {
+            $category = $custom;
+        }
+    }
+
+    if (!$id || $name === '' || $price <= 0 || $category === '' || $category === 'Others') {
         $_SESSION['error'] = "Please fill in all required fields.";
         header("Location: ../pages/edit_product.php?id=$id");
         exit;
@@ -247,10 +263,6 @@ if ($action === 'bulk_delete') {
     header('Location: ../pages/inventory.php');
     exit;
 }
-
-// If we get here, unknown action
-header("Location: ../pages/inventory.php");
-exit;
 
 // If we get here, unknown action
 header("Location: ../pages/inventory.php");

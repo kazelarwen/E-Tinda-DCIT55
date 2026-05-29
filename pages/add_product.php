@@ -34,8 +34,9 @@ require '../includes/header.php';
         class="add-product-form">
         <input type="hidden" name="action" value="add">
 
-        <!-- Product name -->
         <div class="add-product-body">
+
+            <!-- Product name -->
             <div class="add-product-group">
                 <label class="add-product-label" for="name">Product name</label>
                 <input
@@ -67,7 +68,7 @@ require '../includes/header.php';
             <div class="add-product-group">
                 <label class="add-product-label" for="category">Category</label>
                 <div class="add-product-select-wrap">
-                    <select class="add-product-select" id="category" name="category" required>
+                    <select class="add-product-select" id="category" name="category" required onchange="toggleOthers(this)">
                         <option value="" disabled selected>Choose category</option>
                         <option value="Drinks">Drinks</option>
                         <option value="Cookies">Cookies</option>
@@ -78,6 +79,17 @@ require '../includes/header.php';
                     <svg class="add-product-chevron" viewBox="0 0 24 24" fill="none" stroke-width="2">
                         <path d="M6 9l6 6 6-6"/>
                     </svg>
+                </div>
+
+                <!-- Shows only when Others is selected -->
+                <div id="othersGroup" style="display:none; margin-top: 10px;">
+                    <input
+                        class="add-product-input"
+                        type="text"
+                        id="custom_category"
+                        name="custom_category"
+                        placeholder="Enter category name"
+                        autocomplete="off">
                 </div>
             </div>
 
@@ -116,6 +128,7 @@ require '../includes/header.php';
                 </label>
                 <img class="add-product-preview" id="imgPreview" src="" alt="Product preview">
             </div>
+
         </div>
 
         <div class="add-product-actions">
@@ -126,6 +139,20 @@ require '../includes/header.php';
 </main>
 
 <script>
+function toggleOthers(select) {
+    const othersGroup = document.getElementById('othersGroup');
+    const customInput = document.getElementById('custom_category');
+
+    if (select.value === 'Others') {
+        othersGroup.style.display = 'block';
+        customInput.required = true;
+    } else {
+        othersGroup.style.display = 'none';
+        customInput.required = false;
+        customInput.value = '';
+    }
+}
+
 function changeQty(delta) {
     const input = document.getElementById('stock');
     const currentValue = parseInt(input.value, 10) || 0;
