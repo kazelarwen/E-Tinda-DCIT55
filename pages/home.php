@@ -41,6 +41,11 @@ $cat_icons = [
 // Vendor initials for avatar
 $initials = strtoupper(substr($_SESSION['vendor_name'] ?? 'V', 0, 1));
 
+// Fetch profile image
+$stmt = $pdo->prepare("SELECT profile_image FROM vendors WHERE id = ?");
+$stmt->execute([$vendor_id]);
+$vendor = $stmt->fetch();
+$profile_image = $vendor['profile_image'] ?? 'default.png';
 require '../includes/header.php';
 ?>
 
@@ -60,8 +65,13 @@ require '../includes/header.php';
 
     <!-- Avatar → goes to profile -->
     <a href="profile.php" class="topbar-avatar">
+    <?php if (!empty($profile_image) && $profile_image !== 'default.png'): ?>
+        <img src="../assets/uploads/<?= htmlspecialchars($profile_image) ?>"
+             style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+    <?php else: ?>
         <?= $initials ?>
-    </a>
+    <?php endif; ?>
+</a>
 </div>
 
 <!-- ── Page content (scrollable) ─────────────────── -->
@@ -124,11 +134,18 @@ require '../includes/header.php';
                     <span class="badge-out">Out of stock</span>
                 <?php else: ?>
                     <div class="card-stepper" id="stepper-<?= $p['id'] ?>">
-                        <button class="card-stepper-btn card-stepper-minus" style="display:none;"
-                                onclick="cardQtyChange(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, -1)">−</button>
-                        <span class="card-stepper-val" style="display:none;" id="card-qty-<?= $p['id'] ?>">1</span>
-                        <button class="card-stepper-btn card-stepper-plus"
-                                onclick="cardQtyChange(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, 1)">+</button>
+                       <button class="card-stepper-btn card-stepper-minus" style="display:none;"
+                        onclick="cardQtyChange(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, -1)">−</button>
+                <input type="number"
+                    class="card-stepper-val" 
+                    id="card-qty-<?= $p['id'] ?>"
+                    value="1"
+                    min="1"
+                    style="display:none;width:36px;text-align:center;border:none;background:var(--input-bg);font-size:14px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--moonless);-moz-appearance:textfield;padding:0;height:40px;"
+                    oninput="cardQtySet(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, this.value)"
+                    onblur="cardQtyBlur(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>)">
+                <button class="card-stepper-btn card-stepper-plus"
+                        onclick="cardQtyChange(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, 1)">+</button>
                     </div>
                 <?php endif; ?>
             </div>
@@ -209,10 +226,24 @@ function cardQtyChange(id, name, price, delta) {
         val.style.display   = '';
         plus.style.display  = '';
         plus.style.borderRadius = '0 8px 8px 0';
-        val.textContent = newQty;
+        val.value = newQty;
     }
 
     addToCart(id, name, price, Math.max(0, newQty));
+}
+
+function cardQtyBlur(id, name, price) {
+    const input = document.getElementById('card-qty-' + id);
+    let val = parseInt(input.value) || 1;
+    if (val < 1) val = 1;
+    input.value = val;
+
+    const existing = cart.find(i => i.id === id);
+    if (existing) existing.qty = val;
+    else cart.push({ id, name, price, qty: val });
+
+    saveCart();
+    updateCartBar();
 }
 
 function clearCart() {
@@ -258,6 +289,22 @@ function filterProducts(query) {
         const name = card.dataset.name || '';
         card.style.display = name.includes(q) ? '' : 'none';
     });
+}
+
+function cardQtySet(id, name, price, val) {
+    // Allow empty while typing — don't force to 1 yet
+    if (val === '' || val === null) return;
+    
+    val = Math.max(1, parseInt(val) || 1);
+    const input = document.getElementById('card-qty-' + id);
+    input.value = val;
+
+    const existing = cart.find(i => i.id === id);
+    if (existing) existing.qty = val;
+    else cart.push({ id, name, price, qty: val });
+
+    saveCart();
+    updateCartBar();
 }
 
 // Restore cart state on page load

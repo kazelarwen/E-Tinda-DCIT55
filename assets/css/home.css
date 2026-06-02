@@ -379,4 +379,9 @@
     padding: 0;
 }
 
+.card-stepper-val::-webkit-outer-spin-button,
+.card-stepper-val::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 .cart-proceed svg { width: 20px; height: 20px; stroke: white; fill: none; }

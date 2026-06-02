@@ -101,7 +101,7 @@ function togglePassword() {
             </svg>
         </div>
         <h1>E-Tinda</h1>
-        <p>Shine down! Inazuma shines eternal!<br>Torn to oblivion!</p>
+        <p>Vendor Management System</p>
     </div>
 
     <!-- White sheet -->
