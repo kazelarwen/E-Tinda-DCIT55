@@ -1,17 +1,8 @@
 <?php
 // order_action.php
-// Handles POST from order_summary.php "Make Order" button.
-// 1. Validates every cart item (stock, availability)
-// 2. Inserts into orders + order_items tables
-// 3. Deducts stock from products
-// 4. Inserts into sales table
-// 5. Sets $_SESSION['last_order_id'] and redirects to order_complete.php
-// On any failure: rolls back, sets error message, redirects back to order_summary.php
-
 require '../includes/auth.php';
 require '../includes/db.php';
 
-// Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../pages/home.php");
     exit;
@@ -24,11 +15,76 @@ if (($_POST['action'] ?? '') === 'cancel_cart') {
     exit;
 }
 
+// ── Cancel ORDER action (from transaction_detail.php) ───────
+if (($_POST['action'] ?? '') === 'cancel_order') {
+    $order_id = (int)($_POST['order_id'] ?? 0);
+    $vid      = $_SESSION['vendor_id'];
+
+    if (!$order_id) {
+        header("Location: ../pages/transaction_history.php");
+        exit;
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // Verify order belongs to this vendor and is completed
+        $stmt = $pdo->prepare("
+            SELECT * FROM orders
+            WHERE id = ? AND vendor_id = ? AND status = 'completed'
+        ");
+        $stmt->execute([$order_id, $vid]);
+        $order = $stmt->fetch();
+
+        if (!$order) {
+            throw new Exception("Order not found or already cancelled.");
+        }
+
+        // Fetch order items to restore stock
+        $stmt = $pdo->prepare("
+            SELECT product_id, quantity FROM order_items WHERE order_id = ?
+        ");
+        $stmt->execute([$order_id]);
+        $items = $stmt->fetchAll();
+
+        // Restore stock for each item
+        foreach ($items as $item) {
+            $pdo->prepare("
+                UPDATE products
+                SET stock = stock + ?,
+                    is_available = 1
+                WHERE id = ? AND vendor_id = ?
+            ")->execute([$item['quantity'], $item['product_id'], $vid]);
+        }
+
+        // Mark order as cancelled
+        $pdo->prepare("
+            UPDATE orders SET status = 'cancelled' WHERE id = ?
+        ")->execute([$order_id]);
+
+        // Remove from sales table
+        $pdo->prepare("
+            DELETE FROM sales WHERE order_id = ?
+        ")->execute([$order_id]);
+
+        $pdo->commit();
+
+        $_SESSION['success'] = "Order #" . str_pad($order_id, 3, '0', STR_PAD_LEFT) . " has been cancelled.";
+        header("Location: ../pages/transaction_detail.php?id=$order_id");
+        exit;
+
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        $_SESSION['error'] = $e->getMessage();
+        header("Location: ../pages/transaction_detail.php?id=$order_id");
+        exit;
+    }
+}
+
 $vid            = $_SESSION['vendor_id'];
 $payment_method = $_POST['payment_method'] ?? 'cash';
-$raw_items      = $_POST['items'] ?? [];   // ['product_id' => qty]
+$raw_items      = $_POST['items'] ?? [];
 
-// Basic guard — must have items
 if (empty($raw_items)) {
     $_SESSION['error'] = "Your cart is empty.";
     header("Location: ../pages/order_summary.php");
@@ -38,17 +94,15 @@ if (empty($raw_items)) {
 try {
     $pdo->beginTransaction();
 
-    $line_items = [];  // validated rows ready to insert
+    $line_items = [];
     $total      = 0;
 
     foreach ($raw_items as $pid => $qty) {
         $pid = (int) $pid;
         $qty = (int) $qty;
 
-        // Skip if qty was zeroed out on the summary page
         if ($qty <= 0) continue;
 
-        // Fetch product — must belong to this vendor and be available
         $stmt = $pdo->prepare("
             SELECT id, name, price, stock, is_available
             FROM products
@@ -86,7 +140,6 @@ try {
         throw new Exception("No valid items in cart.");
     }
 
-    // ── 1. Insert the order ──────────────────────────────
     $stmt = $pdo->prepare("
         INSERT INTO orders (vendor_id, payment_method, total_amount, status, created_at)
         VALUES (?, ?, ?, 'completed', NOW())
@@ -94,9 +147,7 @@ try {
     $stmt->execute([$vid, $payment_method, $total]);
     $order_id = $pdo->lastInsertId();
 
-    // ── 2. Insert order items + deduct stock ─────────────
     foreach ($line_items as $item) {
-        // Insert order item
         $stmt = $pdo->prepare("
             INSERT INTO order_items (order_id, product_id, quantity, unit_price)
             VALUES (?, ?, ?, ?)
@@ -108,7 +159,6 @@ try {
             $item['unit_price'],
         ]);
 
-        // Deduct stock
         $stmt = $pdo->prepare("
             UPDATE products
             SET stock = stock - ?
@@ -116,27 +166,23 @@ try {
         ");
         $stmt->execute([$item['quantity'], $item['product_id'], $vid]);
 
-        // Auto-mark unavailable if stock hits zero
         $pdo->prepare("
             UPDATE products SET is_available = 0
             WHERE id = ? AND stock <= 0
         ")->execute([$item['product_id']]);
     }
 
-    // ── 3. Record in sales table ─────────────────────────
     $stmt = $pdo->prepare("
         INSERT INTO sales (order_id, vendor_id, total_amount, sale_date, created_at)
         VALUES (?, ?, ?, CURDATE(), NOW())
     ");
     $stmt->execute([$order_id, $vid, $total]);
 
-    // ── 4. Commit + clean up session ────────────────────
     $pdo->commit();
 
     unset($_SESSION['cart']);
     $_SESSION['last_order_id'] = $order_id;
 
-    // Go to success page
     header("Location: ../pages/order_complete.php");
     exit;
 

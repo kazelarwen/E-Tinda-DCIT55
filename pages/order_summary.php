@@ -6,7 +6,6 @@ $page_title = 'Order Summary — E-Tinda';
 $active_nav = 'home';
 $page_css   = 'order_summary.css';
 
-// Cart lives in session: $_SESSION['cart'] = ['product_id' => qty, ...]
 $cart = $_SESSION['cart'] ?? [];
 
 if (empty($cart)) {
@@ -14,7 +13,6 @@ if (empty($cart)) {
     exit;
 }
 
-// Fetch product details for every item in cart
 $ids          = array_keys($cart);
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 $stmt         = $pdo->prepare(
@@ -29,7 +27,6 @@ foreach ($stmt->fetchAll() as $p) {
     $products[$p['id']] = $p;
 }
 
-// Calculate total
 $total = 0;
 foreach ($cart as $pid => $qty) {
     if (isset($products[$pid])) {
@@ -40,7 +37,6 @@ foreach ($cart as $pid => $qty) {
 $error = $_SESSION['error'] ?? ''; unset($_SESSION['error']);
 
 require '../includes/header.php';
-// Clear the JS sessionStorage cart — PHP session is now the source of truth
 ?>
 <script>sessionStorage.removeItem('etinda_cart');</script>
 
@@ -67,6 +63,7 @@ require '../includes/header.php';
             $subtotal = $p['price'] * $qty;
         ?>
         <div class="summary-row" data-id="<?= $pid ?>">
+
             <!-- Product image -->
             <div class="summary-img-wrap">
                 <?php if ($p['image'] && $p['image'] !== 'placeholder.png'): ?>
@@ -91,13 +88,19 @@ require '../includes/header.php';
             <div class="summary-stepper">
                 <button type="button" class="stepper-btn"
                         onclick="updateQty(<?= $pid ?>, -1)">−</button>
-                <span class="stepper-val" id="qty-<?= $pid ?>"><?= $qty ?></span>
+                <input type="number"
+                    class="stepper-val stepper-input"
+                    id="qty-<?= $pid ?>"
+                    value="<?= $qty ?>"
+                    min="0"
+                    oninput="setQty(<?= $pid ?>, this.value)">
                 <button type="button" class="stepper-btn stepper-plus"
                         onclick="updateQty(<?= $pid ?>, 1)">+</button>
             </div>
-        </div>
+
+        </div><!-- /.summary-row -->
         <?php endforeach; ?>
-    </div>
+    </div><!-- /.summary-list -->
 
     <!-- Payment Method -->
     <div class="section" style="padding:20px;">
@@ -117,30 +120,27 @@ require '../includes/header.php';
 </div><!-- /.page-content -->
 
 <!-- Sticky bottom total + action buttons -->
+<!-- Sticky bottom total + action buttons -->
 <div class="order-bottom-bar">
     <div class="order-total-line">
         <span class="total-label-lg">Total:</span>
         <span class="total-value-lg" id="grandTotal">₱<?= number_format($total, 0) ?></span>
     </div>
-    <div class="form-action-bar two-btn" style="margin:0;padding:0 20px 20px;">
-        <!-- Opens the cancel confirmation modal instead of navigating away directly -->
-        <button type="button" class="btn btn-danger" style="flex:1"
-                onclick="openCancelModal()">Cancel</button>
-
-        <!-- POST form to place the order -->
-        <form method="POST" action="../actions/order_action.php" id="orderForm" style="flex:1;display:flex;">
-            <input type="hidden" name="payment_method" id="paymentInput" value="cash">
-            <?php foreach ($cart as $pid => $qty): ?>
-                <input type="hidden" name="items[<?= $pid ?>]"
-                       value="<?= (int)$qty ?>" id="input-<?= $pid ?>">
-            <?php endforeach; ?>
-            <button type="submit" class="btn btn-primary" style="width:100%;">Make Order</button>
-        </form>
-    </div>
+    <form method="POST" action="../actions/order_action.php" id="orderForm">
+        <input type="hidden" name="payment_method" id="paymentInput" value="cash">
+        <?php foreach ($cart as $pid => $qty): ?>
+            <input type="hidden" name="items[<?= $pid ?>]"
+                value="<?= (int)$qty ?>" id="input-<?= $pid ?>">
+        <?php endforeach; ?>
+        <div style="display:flex;gap:12px;padding:0 20px 20px;width:100%;box-sizing:border-box;">
+            <button type="button" class="btn btn-danger" style="flex:1;"
+                    onclick="openCancelModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="flex:1;">Make Order</button>
+        </div>
+    </form>
 </div>
 
 <script>
-// Live cart data in JS (mirrors PHP session)
 const prices = {
     <?php foreach ($cart as $pid => $qty):
         if (!isset($products[$pid])) continue; ?>
@@ -156,26 +156,40 @@ let qtys = {
 
 function updateQty(pid, delta) {
     qtys[pid] = Math.max(0, (qtys[pid] || 0) + delta);
-    document.getElementById('qty-' + pid).textContent = qtys[pid];
+    document.getElementById('qty-' + pid).value = qtys[pid];
 
-    // Update hidden input
     const hiddenInput = document.getElementById('input-' + pid);
     if (hiddenInput) hiddenInput.value = qtys[pid];
 
-    // Recalculate grand total
     let total = 0;
     for (const id in qtys) {
         total += (prices[id] || 0) * qtys[id];
     }
     document.getElementById('grandTotal').textContent = '₱' + total.toLocaleString();
 
-    // Update subtotal in row
-    const row      = document.querySelector('[data-id="' + pid + '"]');
+    const row = document.querySelector('[data-id="' + pid + '"]');
     const subtotal = (prices[pid] || 0) * qtys[pid];
     row.querySelector('.summary-subtotal').textContent = '₱' + subtotal.toLocaleString();
 }
 
-// Sync payment method to hidden input before submit
+function setQty(pid, val) {
+    val = Math.max(0, parseInt(val) || 0);
+    qtys[pid] = val;
+
+    const hiddenInput = document.getElementById('input-' + pid);
+    if (hiddenInput) hiddenInput.value = val;
+
+    let total = 0;
+    for (const id in qtys) {
+        total += (prices[id] || 0) * qtys[id];
+    }
+    document.getElementById('grandTotal').textContent = '₱' + total.toLocaleString();
+
+    const row = document.querySelector('[data-id="' + pid + '"]');
+    const subtotal = (prices[pid] || 0) * val;
+    row.querySelector('.summary-subtotal').textContent = '₱' + subtotal.toLocaleString();
+}
+
 document.getElementById('paymentMethod').addEventListener('change', function() {
     document.getElementById('paymentInput').value = this.value;
 });

@@ -10,12 +10,23 @@ $vid        = $_SESSION['vendor_id'];
 $success = $_SESSION['success'] ?? ''; unset($_SESSION['success']);
 $error   = $_SESSION['error']   ?? ''; unset($_SESSION['error']);
 
-$stmt = $pdo->prepare("
-    SELECT * FROM products
-    WHERE vendor_id = ?
-    ORDER BY created_at DESC
-");
-$stmt->execute([$vid]);
+$active_cat = $_GET['category'] ?? 'All';
+
+if ($active_cat === 'All') {
+    $stmt = $pdo->prepare("
+        SELECT * FROM products
+        WHERE vendor_id = ?
+        ORDER BY created_at DESC
+    ");
+    $stmt->execute([$vid]);
+} else {
+    $stmt = $pdo->prepare("
+        SELECT * FROM products
+        WHERE vendor_id = ? AND category = ?
+        ORDER BY created_at DESC
+    ");
+    $stmt->execute([$vid, $active_cat]);
+}
 $products = $stmt->fetchAll();
 
 require '../includes/header.php';
@@ -38,6 +49,17 @@ require '../includes/header.php';
         <a href="add_product.php" class="inv-add-btn">
             Add product <span class="inv-add-plus">+</span>
         </a>
+    </div>
+
+    <!-- Category filter tabs -->
+    <?php $categories = ['All', 'Drinks', 'Cookies', 'Bread', 'Snacks', 'Others']; ?>
+    <div class="inv-categories">
+        <?php foreach ($categories as $cat): ?>
+        <a href="?category=<?= urlencode($cat) ?>"
+           class="inv-cat-tab <?= $active_cat === $cat ? 'active' : '' ?>">
+            <?= $cat ?>
+        </a>
+        <?php endforeach; ?>
     </div>
 
     <?php if (empty($products)): ?>
@@ -223,8 +245,7 @@ require '../includes/header.php';
             modalBody.textContent  = 'Do you really want to delete ' + n + ' ' + noun + '?';
             confirmBtn.textContent = 'Delete ' + n + ' ' + noun;
             deleteBar.style.display   = 'flex';
-            overlay.style.display     = 'flex'; /* pre-load flex so display:flex is ready */
-            overlay.style.display     = 'none'; /* keep hidden until button tapped */
+            overlay.style.display     = 'none';
         } else {
             deleteBar.style.display = 'none';
             overlay.style.display   = 'none';

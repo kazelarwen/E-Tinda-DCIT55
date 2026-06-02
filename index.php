@@ -1,6 +1,21 @@
 <?php
 session_start();
 
+// Auto-login if remember me cookie exists
+if (!isset($_SESSION['vendor_id']) && isset($_COOKIE['remember_vendor_id'])) {
+    require 'includes/db.php';
+    $stmt = $pdo->prepare("SELECT * FROM vendors WHERE id = ?");
+    $stmt->execute([$_COOKIE['remember_vendor_id']]);
+    $vendor = $stmt->fetch();
+    if ($vendor) {
+        $_SESSION['vendor_id']   = $vendor['id'];
+        $_SESSION['stall_name']  = $vendor['stall_name'];
+        $_SESSION['vendor_name'] = $vendor['vendor_name'];
+        header("Location: pages/home.php");
+        exit;
+    }
+}
+
 // Already logged in? Go to dashboard
 if (isset($_SESSION['vendor_id'])) {
     header("Location: pages/dashboard.php");
@@ -26,6 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['vendor_id']   = $vendor['id'];
             $_SESSION['stall_name']  = $vendor['stall_name'];
             $_SESSION['vendor_name'] = $vendor['vendor_name'];
+
+            // Remember me — set cookie for 30 days
+            if (!empty($_POST['remember'])) {
+                setcookie('remember_vendor_id', $vendor['id'], time() + (30 * 24 * 60 * 60), '/');
+            }
+
             header("Location: pages/home.php");
             exit;
         } else {

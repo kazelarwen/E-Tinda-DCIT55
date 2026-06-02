@@ -17,7 +17,9 @@
     font-weight: 700;
     color: var(--moonless);
 }
-
+.txn-row--cancelled {
+    opacity: 0.45;
+}
 /* Date group label e.g. "TODAY" / "13 APR 2026" */
 .txn-group-label {
     font-size: 11px;

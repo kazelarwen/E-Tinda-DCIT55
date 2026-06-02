@@ -119,15 +119,17 @@ require '../includes/header.php';
                 <div class="card-price">₱<?= number_format($p['price'], 0) ?></div>
             </div>
 
-            <div class="card-footer">
+           <div class="card-footer">
                 <?php if ($p['stock'] <= 0 || !$p['is_available']): ?>
                     <span class="badge-out">Out of stock</span>
                 <?php else: ?>
-                    <span></span><!-- spacer -->
-                    <button class="btn-add-icon"
-                            onclick="addToCart(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>)">
-                        +
-                    </button>
+                    <div class="card-stepper" id="stepper-<?= $p['id'] ?>">
+                        <button class="card-stepper-btn card-stepper-minus" style="display:none;"
+                                onclick="cardQtyChange(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, -1)">−</button>
+                        <span class="card-stepper-val" style="display:none;" id="card-qty-<?= $p['id'] ?>">1</span>
+                        <button class="card-stepper-btn card-stepper-plus"
+                                onclick="cardQtyChange(<?= $p['id'] ?>, '<?= addslashes(htmlspecialchars($p['name'])) ?>', <?= $p['price'] ?>, 1)">+</button>
+                    </div>
                 <?php endif; ?>
             </div>
 
@@ -176,20 +178,41 @@ function updateCartBar() {
     bar.classList.toggle('visible', total > 0);
 }
 
-function addToCart(id, name, price) {
+function addToCart(id, name, price, qty) {
     const existing = cart.find(i => i.id === id);
     if (existing) {
-        existing.qty++;
+        existing.qty = qty;
+        if (qty <= 0) cart = cart.filter(i => i.id !== id);
     } else {
-        cart.push({ id, name, price, qty: 1 });
+        if (qty > 0) cart.push({ id, name, price, qty });
     }
     saveCart();
     updateCartBar();
+}
 
-    // Quick visual feedback
-    const btn = event.currentTarget;
-    btn.style.transform = 'scale(1.3)';
-    setTimeout(() => { btn.style.transform = ''; }, 180);
+function cardQtyChange(id, name, price, delta) {
+    const existing = cart.find(i => i.id === id);
+    const newQty = (existing ? existing.qty : 0) + delta;
+
+    // Update stepper UI
+    const minus = document.querySelector(`#stepper-${id} .card-stepper-minus`);
+    const val   = document.getElementById(`card-qty-${id}`);
+    const plus  = document.querySelector(`#stepper-${id} .card-stepper-plus`);
+
+    if (newQty <= 0) {
+        minus.style.display = 'none';
+        val.style.display   = 'none';
+        plus.style.display  = '';
+        plus.style.borderRadius = '8px';
+    } else {
+        minus.style.display = '';
+        val.style.display   = '';
+        plus.style.display  = '';
+        plus.style.borderRadius = '0 8px 8px 0';
+        val.textContent = newQty;
+    }
+
+    addToCart(id, name, price, Math.max(0, newQty));
 }
 
 function clearCart() {

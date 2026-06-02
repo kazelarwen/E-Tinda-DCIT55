@@ -48,6 +48,45 @@ $stmt = $pdo->prepare("
 $stmt->execute([$vid]);
 $orders_today = (int)$stmt->fetchColumn();
 
+// Yesterday's items sold
+$stmt = $pdo->prepare("
+    SELECT COALESCE(SUM(oi.quantity), 0) AS items_sold
+    FROM order_items oi
+    JOIN orders o ON oi.order_id = o.id
+    WHERE o.vendor_id = ? AND o.status = 'completed'
+      AND DATE(o.created_at) = CURDATE() - INTERVAL 1 DAY
+");
+$stmt->execute([$vid]);
+$items_sold_yesterday = (int)$stmt->fetchColumn();
+
+// Yesterday's orders
+$stmt = $pdo->prepare("
+    SELECT COUNT(*) AS orders_yesterday
+    FROM orders
+    WHERE vendor_id = ? AND status = 'completed'
+      AND DATE(created_at) = CURDATE() - INTERVAL 1 DAY
+");
+$stmt->execute([$vid]);
+$orders_yesterday = (int)$stmt->fetchColumn();
+
+// Items sold % change
+$items_pct = 0;
+if ($items_sold_yesterday > 0) {
+    $items_pct = round((($items_sold_today - $items_sold_yesterday) / $items_sold_yesterday) * 100);
+} elseif ($items_sold_today > 0) {
+    $items_pct = 100;
+}
+$items_pct_up = $items_pct >= 0;
+
+// Orders % change
+$orders_pct = 0;
+if ($orders_yesterday > 0) {
+    $orders_pct = round((($orders_today - $orders_yesterday) / $orders_yesterday) * 100);
+} elseif ($orders_today > 0) {
+    $orders_pct = 100;
+}
+$orders_pct_up = $orders_pct >= 0;
+
 // [SELECT + WHERE] Yesterday's sales → % change badge on Profit tile
 $stmt = $pdo->prepare("
     SELECT COALESCE(SUM(total_amount), 0) AS y_sales
@@ -221,7 +260,9 @@ require '../includes/header.php';
                 </div>
             </div>
             <div class="tile-value tile-value--dark"><?= $items_sold_today ?></div>
-            <div class="tile-badge tile-badge--green">▲ from yesterday</div>
+           <div class="tile-badge <?= $items_pct_up ? 'tile-badge--green' : 'tile-badge--red' ?>">
+            <?= $items_pct_up ? '▲' : '▼' ?> <?= abs($items_pct) ?>% from yesterday
+        </div>
         </div>
 
         <!-- Tile 3: Items Left (stock) — white -->
@@ -241,7 +282,7 @@ require '../includes/header.php';
                     <div class="stock-bar-fill" style="width:<?= $stock_pct ?>%"></div>
                 </div>
                 <span class="stock-label"><?= $stock_pct ?>% stock</span>
-            </div>
+                </div>
         </div>
 
         <!-- Tile 4: Orders Today — white -->
@@ -257,7 +298,9 @@ require '../includes/header.php';
                 </div>
             </div>
             <div class="tile-value tile-value--dark"><?= $orders_today ?></div>
-            <div class="tile-badge tile-badge--red">▼ from yesterday</div>
+            <div class="tile-badge <?= $orders_pct_up ? 'tile-badge--green' : 'tile-badge--red' ?>">
+            <?= $orders_pct_up ? '▲' : '▼' ?> <?= abs($orders_pct) ?>% from yesterday
+            </div>
         </div>
 
     </div><!-- /.overview-grid -->
