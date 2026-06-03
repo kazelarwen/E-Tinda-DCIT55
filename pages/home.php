@@ -247,6 +247,19 @@ function cardQtyBlur(id, name, price) {
 }
 
 function clearCart() {
+    // Reset all stepper UIs
+    cart.forEach(item => {
+        const minus = document.querySelector(`#stepper-${item.id} .card-stepper-minus`);
+        const val   = document.getElementById(`card-qty-${item.id}`);
+        const plus  = document.querySelector(`#stepper-${item.id} .card-stepper-plus`);
+        if (minus && val && plus) {
+            minus.style.display = 'none';
+            val.style.display   = 'none';
+            val.value = 1;
+            plus.style.display  = '';
+            plus.style.borderRadius = '8px';
+        }
+    });
     cart = [];
     saveCart();
     updateCartBar();
