@@ -308,6 +308,21 @@ function cardQtySet(id, name, price, val) {
 }
 
 // Restore cart state on page load
+// Restore stepper UI from cart on page load
+cart.forEach(item => {
+    const minus = document.querySelector(`#stepper-${item.id} .card-stepper-minus`);
+    const val   = document.getElementById(`card-qty-${item.id}`);
+    const plus  = document.querySelector(`#stepper-${item.id} .card-stepper-plus`);
+
+    if (minus && val && plus && item.qty > 0) {
+        minus.style.display = '';
+        val.style.display   = '';
+        plus.style.display  = '';
+        plus.style.borderRadius = '0 8px 8px 0';
+        val.value = item.qty;
+    }
+});
+
 updateCartBar();
 </script>
 
